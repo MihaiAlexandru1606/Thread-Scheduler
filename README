@@ -1,0 +1,121 @@
+
+ ______                                __ __        ____    _____
+/\__  _\                              /\ \\ \      /\  _`\ /\  __`\
+\/_/\ \/    __    ___ ___      __     \ \ \\ \     \ \,\L\_\ \ \/\ \
+   \ \ \  /'__`\/' __` __`\  /'__`\    \ \ \\ \_    \/_\__ \\ \ \ \ \
+    \ \ \/\  __//\ \/\ \/\ \/\ \L\.\_   \ \__ ,__\    /\ \L\ \ \ \_\ \
+     \ \_\ \____\ \_\ \_\ \_\ \__/.\_\   \/_/\_\_/    \ `\____\ \_____\
+      \/_/\/____/\/_/\/_/\/_/\/__/\/_/      \/_/       \/_____/\/_____/
+
+
+
+---------------------         Sisteme de Operare         -----------------------
+
+Tema 4 :  Multi-platform Development
+Nume : Niculescu
+Prenume : Mihai Alexandru
+Grupa : 335CB
+Sistem de operare : Ubuntu 18.04 LTS 64bit && Windows 10 64bits
+Editor : CLion
+
+--------------------------------------------------------------------------------
+
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Structura Temei  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+.
+├── data_structure
+│   ├── linked_list
+│   │   ├── linked_list.c
+│   │   └── linked_list.h
+│   └── priority_queue
+│       ├── priority_queue.c
+│       └── priority_queue.h
+├── Makefile
+├── README
+├── scheduler
+│   ├── scheduler_structure.h
+│   ├── so_scheduler.c
+│   └── so_scheduler.h
+└── utils
+    └── utils.h
+
+    Tema implemneteaza un planificator de thread-uri.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Structuri de Date  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    Coada este implementata ca o lista ordonata. In strcutura cozii este retinut
+inceputul listei si comparatorul, pe baza lui reusind ordonarea. In structura
+unei celule din lista, este retinuta prioritate, cuvantul si adresa urmatoarei
+celule.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   priority_queue   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    Pentru initializare exita functia : create_priority_queue.
+    Adauagare in coada are complexitate : O(n), operatia de adaugare presupune
+cautarea in lista a primei celule care are prioritatea mai mica decat celula pe
+care o introducem, asta inseamna ca la prioritati egale se pastreaza ordinea de
+indroducere. Dupa aceia se insereaza noua celula, daca se poate aloca memoria.
+    Top : O(1). daca coada este vida se intoarece NULL, altfel cuvantul primei
+celula, (head din structura).
+    Pop : O(1) eliminare primei celula si eliberarea memoriei. Daca coada este
+vida atunci se ignora.
+    Pentru eliberea memorie exista functia : destroy_priority_queue.
+    Exista o functiecare aduaga o lista la coada fara a mai aloca memoria pentru
+structura unei celule.
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   linked_list >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    Pentru linked list exista o functie care aduaga la inceputul listei, o
+functie care elimina head-ul listi si una care distruge lista
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< planificator >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    Pentru abstractizarea unei thread exista structura so_thread_info, cele mai
+importante fiind semeforarele binare folosite pentru a bloca thread-urile si
+astfel a permite decat unui tread sa ruleze in sistem:
+    **) wait -> blocheaza un thread pana cand este planificat pe procesor.
+    **) create -> blocheaza un thread-ul parinte pana thread-ul creat este in
+        starea ready si apleaza blocarea folosind wait
+    Mai exista : time_run care indica timpul cand a rulat pe procesor de cand a
+fost planificat. total_run_time timpul toatal care a rulat un proces.
+    Pentru absatrctizarea planificatorului exista structura : scheduler_type in
+se gaseste coda / liste care reprezinta starea unui thread. Semaforul binar
+finish indica daca toate thread-urile au terminat, cand se apleaza
+scheduler_terminate_state si nu mai sunt alte thread-uri in sistem.
+    Algoritmul este urmatorul : cand un thread vrea sa isi continue exectie dupa
+terminarea unei instructiuni apeleza planificatorul cu next_state READY, daca el
+are cea mai mare prioritate nu conteaza si isi continua executia sau nu mai este
+nimeni, daca exista alt tread si au pritati egale isi cedeaza locul doar daca
+i-a expirat quanta, daca este un thread cu prioriatea mai mare este scors si
+inclocuit de un nou tread(asta inseamna ca faca wait pe semaforul binar si cel
+care inlocuieste ii face release, tread-urile sunt blocate in prima faza), un
+caz special este cand este primul tread, atunci se face doar releasa pentru
+urmatorul. Pentru wait  se aduaga in lista de asteptare pentru fiecare
+dispozitiv si se face release pentru urmatorul tread, cand se da signal doar se
+muta lista in coda, Cand termina se adauaga in lista care indica ca au terminat
+si face release pentru urmatorul, daca nu mai exista alt tread se elibireaza
+semaforul ce indica faptul ca a ajuns la final executia.
+    Pentru sortarea in coada se foloste functia : compare_priority se alega
+prioritatea cea mai mare si la egalitate thread-ul care a rulat cel mai putin.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Rulare >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    Pentru crearea biblioteci:
+    *) make build / nmake build
+
+
+    Pentru eliminare executabil:
+    *) make clean / nmake clean
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
